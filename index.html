@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Result Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: "Tiro Bangla", serif,Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    p {
+      margin-top: 20px;
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 5px;
+      min-height: 40px;
+      font-size: 16px;
+    }
+
+    /* ///// */
+    select, input[type="text"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 2px solid #dfe6e9;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  color: #2d3436;
+  transition: all 0.3s ease;
+  appearance: none; /* Removes default browser arrow */
+  -webkit-appearance: none;
+  box-sizing: border-box; /* Ensures padding doesn't break width */
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>হযরত ফাতেমা (রাঃ) মহিলা মাদরাসা</h2>
+    <h3>বার্ষিক পরীক্ষা রেজাল্ট ২০২৬<h3>
+
+    <select id="classSelect">
+      <option value="class1">Class 1</option>
+      <option value="class2">Class 2</option>
+      <option value="Sheet3">Class 3</option>
+    </select>
+
+    <input type="text" id="roll" placeholder="Enter Roll Number">
+    <br>
+    <button onclick="getData()">Check Result</button>
+
+    <!-- Only ONE p tag for all data -->
+    <p id="result" style="text-align: left;"></p>
+  </div>
+
+  <script>
+async function getData() {
+    try {
+        const roll = document.getElementById("roll").value;
+        const className = document.getElementById("classSelect").value;
+        const output = document.getElementById("result");
+        output.innerHTML = "Loading...";
+
+        let baseUrl = "https://script.google.com/macros/s/AKfycbw0cdV1_O_Jc-zW6XIm8OM0VY_GLXJrn9OOmtzkwPsyY3DuhooBYymwMQ_4aisAZ28tig/exec";
+        let res = await fetch(`${baseUrl}?key=roll&sheet=${className}&value=${roll}`); //change the key, sheetname, value
+        let jsonData = await res.json();
+        console.log(className);
+
+        if (jsonData.status != "success") {
+            output.innerHTML = "রোলটি পাওয়া যায়নি";
+            return
+        }
+        let data = await jsonData.data;
+
+        let text = "";
+        for (let key in jsonData.data) {
+            text += ` <br></br>  <b>${key}</b> : ${data[key]}`;
+        }
+        output.innerHTML = className + text;
+    } catch (error) {
+        document.getElementById("result").innerHTML = "নেটওয়ার্কে কোন সমস্যা হয়েছে"
+    }
+
+}
+
+    //   if (!roll) {
+    //     output.innerText = "Please enter a roll number.";
+    //     return;
+    //   }
+
+    //   fetch("https://script.google.com/macros/s/AKfycbw0cdV1_O_Jc-zW6XIm8OM0VY_GLXJrn9OOmtzkwPsyY3DuhooBYymwMQ_4aisAZ28tig/exec?key=roll&sheet=sheet1&value=10")
+    //     .then(response => response.json())
+    //     .then(data => {
+          
+    //       if (data.error) {
+    //         output.innerText = data.error;
+    //         return;
+    //       }
+
+    //       // Convert object to readable string
+    //       let text = "";
+    //       for (let key in data) {
+    //         text += key + ": " + data[key] + " | ";
+    //       }
+
+    //       output.innerText = text;
+    //     })
+    //     .catch(error => {
+    //       output.innerText = "Error fetching data.";
+    //     });
+    // }
+  </script>
+
+</body>
+</html>
